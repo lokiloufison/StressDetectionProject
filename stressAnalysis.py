@@ -10,7 +10,7 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import BernoulliNB
-import nltk
+from sklearn.metrics import accuracy_score, classification_report
 nltk.data.path.append("nltk_data")
 
 # Load dataset
@@ -52,6 +52,14 @@ xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.33, random_sta
 model = BernoulliNB()
 model.fit(xtrain, ytrain)
 
+# Evaluate model accuracy
+st.write("### Model Accuracy on Test Set:")
+predictions = model.predict(xtest)
+st.write("Accuracy:", accuracy_score(ytest, predictions))
+
+st.write("### Classification Report:")
+st.write(classification_report(ytest, predictions))
+
 # Streamlit UI
 st.title("Stress Detection from Text")
 user_input = st.text_area("Enter text to analyze:", "")
@@ -60,6 +68,12 @@ if st.button("Predict"):
     cleaned_input = clean(user_input)
     vector = cv.transform([cleaned_input]).toarray()
     prediction = model.predict(vector)
+    
+    # Debugging
+    st.write("### Debugging Information:")
+    st.write("Cleaned Input:", cleaned_input)
+    st.write("Vectorized Input:", vector)
+    st.write("Raw Prediction:", prediction)
     
     # Map 0 and 1 to 'No Stress' and 'Stress'
     prediction_label = "Stress" if prediction[0] == 1 else "No Stress"
