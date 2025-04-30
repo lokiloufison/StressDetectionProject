@@ -16,6 +16,11 @@ nltk.data.path.append("nltk_data")
 # Load dataset
 data = pd.read_csv("stress.csv")
 
+# Check data distribution
+st.write("### Distribution of Labels:")
+label_counts = data['label'].value_counts()
+st.write(label_counts)
+
 # Preprocessing
 stemmer = nltk.SnowballStemmer("english")
 stopword = set(stopwords.words('english'))
