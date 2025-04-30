@@ -10,9 +10,9 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import BernoulliNB
+import nltk
+nltk.data.path.append("nltk_data")
 
-# Download stopwords
-nltk.download('stopwords')
 
 # Load dataset
 data = pd.read_csv("stress.csv")
