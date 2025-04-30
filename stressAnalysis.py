@@ -13,7 +13,6 @@ from sklearn.naive_bayes import BernoulliNB
 import nltk
 nltk.data.path.append("nltk_data")
 
-
 # Load dataset
 data = pd.read_csv("stress.csv")
 
@@ -56,4 +55,7 @@ if st.button("Predict"):
     cleaned_input = clean(user_input)
     vector = cv.transform([cleaned_input]).toarray()
     prediction = model.predict(vector)
-    st.write(f"**Prediction:** {prediction[0]}")
+    
+    # Map 0 and 1 to 'No Stress' and 'Stress'
+    prediction_label = "Stress" if prediction[0] == 1 else "No Stress"
+    st.write(f"**Prediction:** {prediction_label}")
