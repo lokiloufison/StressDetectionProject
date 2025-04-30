@@ -7,7 +7,7 @@ import nltk
 import re
 import string
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.metrics import accuracy_score, classification_report
@@ -44,8 +44,8 @@ data["text"] = data["text"].apply(clean)
 data = data[["text", "label"]]
 
 # Vectorization and model training
-cv = CountVectorizer()
-X = cv.fit_transform(data["text"])
+tfidf = TfidfVectorizer(ngram_range=(1, 2))  # Use unigrams and bigrams
+X = tfidf.fit_transform(data["text"])
 y = data["label"]
 xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.33, random_state=42)
 
@@ -66,13 +66,17 @@ user_input = st.text_area("Enter text to analyze:", "")
 
 if st.button("Predict"):
     cleaned_input = clean(user_input)
-    vector = cv.transform([cleaned_input]).toarray()
-    prediction = model.predict(vector)
+    vector = tfidf.transform([cleaned_input]).toarray()
     
     # Debugging
     st.write("### Debugging Information:")
     st.write("Cleaned Input:", cleaned_input)
     st.write("Vectorized Input:", vector)
+    
+    if np.all(vector == 0):
+        st.write("**Warning:** The input text contains words not seen during training.")
+    
+    prediction = model.predict(vector)
     st.write("Raw Prediction:", prediction)
     
     # Map 0 and 1 to 'No Stress' and 'Stress'
